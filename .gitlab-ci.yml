@@ -1,4 +1,5 @@
-before_script: pip install -U platformio
+before_script:
+  - pip install -U platformio
 
 build:
   script: pio run
