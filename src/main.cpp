@@ -2,7 +2,7 @@
 #include <Adafruit_NeoPixel.h>
 #include "Animations.h"
 
-#define PIN 6
+#define PIN 7 // was 6
 
 Adafruit_NeoPixel strip = Adafruit_NeoPixel(60, PIN, NEO_GRB + NEO_KHZ800);
 
