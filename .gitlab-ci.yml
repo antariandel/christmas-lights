@@ -1,4 +1,5 @@
 before_script:
+  - virtualenv2 venv
   - pip install -U platformio
 
 build:
