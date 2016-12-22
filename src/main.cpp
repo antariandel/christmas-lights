@@ -50,19 +50,19 @@ void Glittery(uint8_t frequency) {
   fadeToBlackBy(leds, NUM_LEDS, 20);
 }
 
-void Rainbow() {
-  fill_rainbow(leds, NUM_LEDS, gHue, 5);
-}
-
-void RainbowDarker(uint8_t value) {
+void RainbowValue(uint8_t value) {
   for(uint8_t i = 0; i<NUM_LEDS; i++) {
     leds[i] = CHSV(gHue+i*3, 255, value);
   }
 }
 
 void GlitteryRainbow() {
-  RainbowDarker(128);
+  RainbowValue(128);
   Glittery(64);
+}
+
+void Rainbow() {
+  RainbowValue(128);
 }
 
 void BPM() {
@@ -88,6 +88,10 @@ void setup() {
   digitalWrite(5, LOW);
   while(digitalRead(4) == LOW); //wait here if jumper is on
 
+  random16_set_seed(analogRead(A3));
+  gCurrentAnim = random8();
+  gHue = random8();
+
   gAnimations[0] = Sinelon;
   gAnimations[1] = Juggle;
   gAnimations[2] = GlitteryRainbow;
@@ -101,5 +105,9 @@ void loop() {
   FastLED.show();
   FastLED.delay(1000/FRAMES_PER_SECOND);
   EVERY_N_MILLISECONDS(10) { gHue++; }
-  EVERY_N_MILLISECONDS(30000) { gCurrentAnim++; }
+  EVERY_N_MILLISECONDS(30000) {
+    if (random8() < 85) { // 33% chance
+      gCurrentAnim += random8();
+    }
+  }
 }
