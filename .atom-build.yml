@@ -1,0 +1,5 @@
+cmd: "pio run"
+name: "build"
+targets:
+    upload:
+      cmd: "pio run --target=upload"
