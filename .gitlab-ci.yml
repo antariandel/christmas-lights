@@ -1,9 +1,2 @@
-before_script:
-  - pwd
-  - pip2 install virtualenv
-  - virtualenv venv
-  - source venv/bin/activate
-  - pip install -U platformio
-
 build:
   script: pio run
