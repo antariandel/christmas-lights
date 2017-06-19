@@ -2,7 +2,10 @@ before_script:
   - pwd
   - pip2 install virtualenv
   - virtualenv venv
+<<<<<<< HEAD
   - source bin/activate
+=======
+>>>>>>> f9daafc363e9357364d2c10b69c046057d87637c
   - pip2 install -U platformio
 
 build:
