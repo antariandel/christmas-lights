@@ -20,6 +20,7 @@
 
 CRGB leds[NUM_LEDS];
 uint8_t gHue = 0;
+uint8_t led_pos[NUM_LEDS] = {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 14, 15, 16, 11, 12, 13, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 35, 36, 37, 31, 32, 33, 34, 38, 39, 40, 41, 42};
 uint8_t gGlitter = 0;
 uint8_t gCurrentAnim = 0;
 void (*gAnimations[NUM_ANIMATIONS]) (void);
@@ -38,7 +39,7 @@ void Sinelon() {
   uint8_t bpm = 20;
 
   int pos = beatsin16(bpm,0,NUM_LEDS);
-  leds[pos] += CHSV( gHue, NOMINAL_SAT, NOMINAL_VAL);
+  leds[led_pos[pos]-1] += CHSV( gHue, NOMINAL_SAT, NOMINAL_VAL);
 }
 
 void Juggle() {
@@ -46,7 +47,7 @@ void Juggle() {
 
   byte dothue = 0;
   for( int i = 0; i < num; i++) {
-    leds[beatsin16(i+7,0,NUM_LEDS)] |= CHSV(dothue, NOMINAL_SAT, NOMINAL_VAL);
+    leds[led_pos[beatsin16(i+7,0,NUM_LEDS)]-1] |= CHSV(dothue, NOMINAL_SAT, NOMINAL_VAL);
     dothue += 256/num;
   }
   FastLED.show();
@@ -54,7 +55,7 @@ void Juggle() {
 
 void Rainbow() {
   for(uint8_t i = 0; i<NUM_LEDS; i++) {
-    leds[i] = CHSV(gHue+i*3, NOMINAL_SAT, NOMINAL_VAL);
+    leds[led_pos[i]-1] = CHSV(gHue+i*3, NOMINAL_SAT, NOMINAL_VAL);
   }
 }
 
@@ -74,7 +75,7 @@ void BPM() {
   for( int i = 0; i < NUM_LEDS; i++) {
     uint8_t norm_sat = scale8(gHue+(i*2), NOMINAL_SAT);
     uint8_t norm_val = scale8(beat-gHue+(i*10), NOMINAL_VAL);
-    leds[i] = ColorFromPalette(palette, norm_sat, norm_val);
+    leds[led_pos[i]-1] = ColorFromPalette(palette, norm_sat, norm_val);
   }
 }
 
@@ -93,6 +94,8 @@ void setup() {
   pinMode(4, INPUT_PULLUP);
   digitalWrite(5, LOW);
   while(digitalRead(4) == LOW); // wait here if prog jumper is on
+
+  digitalWrite(13, HIGH);
 
   pinMode(A3, INPUT);
   random16_set_seed(analogRead(A3));
@@ -116,6 +119,11 @@ void loop() {
 
   FastLED.show();
   FastLED.delay(1000/FRAMES_PER_SECOND);
+
+  EVERY_N_MILLISECONDS(500) {
+    digitalWrite(13, !digitalRead(13));
+  }
+
 
   EVERY_N_MILLISECONDS(10) { gHue++; }
   EVERY_N_MILLISECONDS(10000) {
