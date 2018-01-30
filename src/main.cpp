@@ -2,21 +2,21 @@
 #include <FastLED.h>
 
 // Strip config
-#define DATA_PIN 6
-#define NUM_LEDS 28
+#define DATA_PIN 10
+#define NUM_LEDS 42
 
 // HSV Value and Saturation for animations
-#define NOMINAL_VAL 192
-#define NOMINAL_SAT 200
+#define NOMINAL_VAL 255
+#define NOMINAL_SAT 255
 
 // All LEDs will not exceed this amount of power draw
-#define MAX_MILLIWATTS 2000
+//#define MAX_MILLIWATTS 2000
 
 // Timing
-#define FRAMES_PER_SECOND 25
+#define FRAMES_PER_SECOND 60
 
 // Number of animation functions in gAnimations array
-#define NUM_ANIMATIONS 5
+#define NUM_ANIMATIONS 6
 
 CRGB leds[NUM_LEDS];
 uint8_t gHue = 0;
@@ -30,28 +30,20 @@ void (*gAnimations[NUM_ANIMATIONS]) (void);
 
 void Glittery(uint8_t frequency) {
   if (random8() < frequency) { // chance of glitter
-    uint8_t led_pos = random8(NUM_LEDS);
-    if (leds[random8(NUM_LEDS)]) {
-      leds[led_pos].maximizeBrightness();
-    } else {
-      leds[led_pos] = CHSV(gHue, 255, 255);
-    }
+    leds[random8(NUM_LEDS)] = CHSV(gHue, 255, 255);
   }
-  fadeToBlackBy(leds, NUM_LEDS, 20);
 }
 
 void Sinelon() {
   uint8_t bpm = 20;
 
-  fadeToBlackBy( leds, NUM_LEDS, 20);
   int pos = beatsin16(bpm,0,NUM_LEDS);
   leds[pos] += CHSV( gHue, NOMINAL_SAT, NOMINAL_VAL);
 }
 
 void Juggle() {
-  uint8_t num = 4;
+  uint8_t num = 3;
 
-  fadeToBlackBy(leds, NUM_LEDS, 20);
   byte dothue = 0;
   for( int i = 0; i < num; i++) {
     leds[beatsin16(i+7,0,NUM_LEDS)] |= CHSV(dothue, NOMINAL_SAT, NOMINAL_VAL);
@@ -67,13 +59,15 @@ void Rainbow() {
 }
 
 void Confetti() {
-  fadeToBlackBy(leds, NUM_LEDS, 10);
-  int pos = random16(NUM_LEDS);
-  leds[pos] += CHSV(gHue + random8(64), NOMINAL_SAT, NOMINAL_VAL);
+  leds[random8(NUM_LEDS)] = CHSV(random8(255), NOMINAL_SAT, NOMINAL_VAL);
+}
+
+void Vibro() {
+  fill_solid(leds, 54, CHSV(gHue, NOMINAL_SAT, NOMINAL_VAL));
 }
 
 void BPM() {
-  uint8_t bpm = 40;
+  uint8_t bpm = 75;
 
   CRGBPalette16 palette = PartyColors_p;
   uint8_t beat = beatsin8(bpm, 64, 255);
@@ -90,7 +84,9 @@ void BPM() {
 
 void setup() {
   FastLED.addLeds<WS2812B, DATA_PIN, GRB>(leds, NUM_LEDS);
-  FastLED.setMaxPowerInMilliWatts(MAX_MILLIWATTS);
+  #ifdef MAX_MILLIWATTS
+    FastLED.setMaxPowerInMilliWatts(MAX_MILLIWATTS);
+  #endif
   LEDS.clear(1); // clear the LEDS
 
   pinMode(5, OUTPUT);
@@ -109,11 +105,16 @@ void setup() {
   gAnimations[2] = Rainbow;
   gAnimations[3] = Confetti;
   gAnimations[4] = BPM;
+  gAnimations[5] = Vibro;
+
+  Serial.begin(9600);
 }
 
 void loop() {
+  fadeToBlackBy(leds, NUM_LEDS, 20);
+
   gAnimations[gCurrentAnim % NUM_ANIMATIONS]();
-  Glittery(gGlitter);
+  //Glittery(gGlitter);
 
   FastLED.show();
   FastLED.delay(1000/FRAMES_PER_SECOND);
