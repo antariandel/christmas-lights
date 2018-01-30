@@ -106,8 +106,6 @@ void setup() {
   gAnimations[3] = Confetti;
   gAnimations[4] = BPM;
   gAnimations[5] = Vibro;
-
-  Serial.begin(9600);
 }
 
 void loop() {
