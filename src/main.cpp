@@ -2,7 +2,7 @@
 #include <FastLED.h>
 
 // Strip config
-#define DATA_PIN 10
+#define DATA_PIN 2
 #define NUM_LEDS 42
 
 // HSV Value and Saturation for animations
@@ -13,14 +13,16 @@
 //#define MAX_MILLIWATTS 2000
 
 // Timing
-#define FRAMES_PER_SECOND 60
+#define DELAY_PER_FRAME_MS 0
 
 // Number of animation functions in gAnimations array
 #define NUM_ANIMATIONS 6
 
 CRGB leds[NUM_LEDS];
 uint8_t gHue = 0;
-uint8_t led_pos[NUM_LEDS] = {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 14, 15, 16, 11, 12, 13, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 35, 36, 37, 31, 32, 33, 34, 38, 39, 40, 41, 42};
+uint8_t led_pos[NUM_LEDS] = {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 14, 15, 16, 11, 12,
+  13, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 35, 36, 37, 31,
+  32, 33, 34, 38, 39, 40, 41, 42};
 uint8_t gGlitter = 0;
 uint8_t gCurrentAnim = 0;
 void (*gAnimations[NUM_ANIMATIONS]) (void);
@@ -50,7 +52,6 @@ void Juggle() {
     leds[led_pos[beatsin16(i+7,0,NUM_LEDS)]-1] |= CHSV(dothue, NOMINAL_SAT, NOMINAL_VAL);
     dothue += 256/num;
   }
-  FastLED.show();
 }
 
 void Rainbow() {
@@ -64,7 +65,7 @@ void Confetti() {
 }
 
 void Vibro() {
-  fill_solid(leds, 54, CHSV(gHue, NOMINAL_SAT, NOMINAL_VAL));
+  fill_solid(leds, NUM_LEDS, CHSV(gHue, NOMINAL_SAT, NOMINAL_VAL));
 }
 
 void BPM() {
@@ -118,12 +119,7 @@ void loop() {
   //Glittery(gGlitter);
 
   FastLED.show();
-  FastLED.delay(1000/FRAMES_PER_SECOND);
-
-  EVERY_N_MILLISECONDS(500) {
-    digitalWrite(13, !digitalRead(13));
-  }
-
+  FastLED.delay(DELAY_PER_FRAME_MS);
 
   EVERY_N_MILLISECONDS(10) { gHue++; }
   EVERY_N_MILLISECONDS(10000) {
