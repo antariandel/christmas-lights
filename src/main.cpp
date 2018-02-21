@@ -9,7 +9,7 @@
 #define NOMINAL_VAL 255
 #define NOMINAL_SAT 255
 
-// All LEDs will not exceed this amount of power draw
+// All LEDs will not exceed this approximate amount of power draw
 //#define MAX_MILLIWATTS 2000
 
 // Timing
