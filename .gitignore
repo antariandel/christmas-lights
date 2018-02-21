@@ -4,3 +4,5 @@
 .piolibdeps
 .travis.yml
 lib/readme.txt
+.vscode/c_cpp_properties.json
+.vscode/launch.json

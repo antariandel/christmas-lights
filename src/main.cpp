@@ -61,7 +61,9 @@ void Rainbow() {
 }
 
 void Confetti() {
+  fadeToBlackBy(leds, NUM_LEDS, 20);
   leds[random8(NUM_LEDS)] = CHSV(random8(255), NOMINAL_SAT, NOMINAL_VAL);
+  FastLED.delay(5);
 }
 
 void Vibro() {
