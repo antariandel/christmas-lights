@@ -3,8 +3,4 @@
 .gcc-flags.json
 .piolibdeps
 .travis.yml
-lib/readme.txt
-.vscode/c_cpp_properties.json
-.vscode/launch.json
-.vscode/settings.json
-.vscode/*.db
+.vscode
